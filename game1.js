@@ -102,16 +102,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //flip your card
     function flipCard() {
-        if (this.getAttribute('src') = 'images/game1/white.png') {
+        if (cardsChosen.length === 2) {
             return;
-        } else {
-            var cardId = this.getAttribute('data-id')
+        }
+        var cardId = this.getAttribute('data-id')
+        var cardImage = this.getAttribute('src')
+        if (cardImage === 'images/game1/blank.png') {
             cardsChosen.push(cardArray[cardId].name)
             cardsChosenId.push(cardId)
             this.setAttribute('src', cardArray[cardId].img)
-        }
-        if (cardsChosen.length === 2) {
-            setTimeout(checkForMatch, 500)
+            if (cardsChosen.length === 2) {
+                setTimeout(checkForMatch, 1000)
+            }
         }
     }
 
