@@ -57,10 +57,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid')
     const resultDisplay = document.querySelector('#result')
     const attemptsDisplay = document.querySelector('#attempts')
+    const timeDisplay = document.querySelector('#time')
     var cardsChosen = []
     var cardsChosenId = []
     var cardsWon = []
     var attempts = []
+    var firstMove = 0
 
     //create your board
     function createBoard() {
@@ -96,7 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
         resultDisplay.textContent = cardsWon.length
         attemptsDisplay.textContent = attempts.length
         if (cardsWon.length === cardArray.length / 2) {
-            resultDisplay.textContent = 'Congratulations! You found them all!'
+            clearTimeout(t);
+            resultDisplay.textContent = 'Congratulations! You found them all!';
         }
     }
 
@@ -104,6 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function flipCard() {
         if (cardsChosen.length === 2) {
             return;
+        }
+        if (timeDisplay.textContent === "EXPIRED") {
+            return;
+        }
+        if (firstMove === 0) {
+            firstMove = 1;
+            timer();
         }
         var cardId = this.getAttribute('data-id')
         var cardImage = this.getAttribute('src')
@@ -118,4 +128,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     createBoard()
+
+    //stopwatch
+    var seconds = 0;
+    var minutes = 3;
+    var hours = 0;
+
+    function add() {
+        seconds++;
+        if (seconds >= 60) {
+            seconds = 0;
+            minutes++;
+            if (minutes >= 60) {
+                minutes = 0;
+                hours++;
+            }
+        }
+
+        timeDisplay.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+
+        stopWatch();
+    }
+    function stopWatch() {
+        t = setTimeout(add, 1000);
+    }
+    //stopWatch();
+
+    //timer
+    var totalTime = hours * 3600 + minutes * 60 + seconds
+
+    
+
+    function deduct() {
+        totalTime--;
+        var h = Math.floor((totalTime % (60 * 60 * 24)) / (60 * 60));
+        var m = Math.floor((totalTime % (60 * 60)) / (60));
+        var s = Math.floor((totalTime % (60)));
+
+        timeDisplay.textContent = (h ? (h > 9 ? h : "0" + h) : "00") + ":" + (m ? (m > 9 ? m : "0" + m) : "00") + ":" + (s > 9 ? s : "0" + s);
+
+        if (totalTime < 0) {
+            clearTimeout(t);
+            timeDisplay.textContent = "EXPIRED";
+        }
+
+        timer();
+    }
+
+
+    function timer() {
+        t = setTimeout(deduct, 1000);
+    }
+    
+
 })
+
+
