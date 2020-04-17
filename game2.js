@@ -39,6 +39,7 @@ function countDown() {
     
     if(currentTime === 0) {
         clearInterval(timerId)
+        OpenModal()
         score.textContent = 'GAME OVER! Your final score is ' + result
     }
 }
